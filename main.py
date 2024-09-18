@@ -10,11 +10,18 @@ class Example(Frame):
 
         self.parent = parent
         self.canvas = Canvas(self.parent, width=800, height = 800)
+        self.canvasWidth = self.canvas.winfo_screenwidth()
+        self.canvasHeight = self.canvas.winfo_screenheight()
 
         self.parent.title("Window")
         self.pack(fill=BOTH, expand=1) #для центровки окна
         self.centerWindow()
+        self.dx=0
+        self.dy=0
+        self.cx=0
+        self.cy=0
         self.draw_axis(-6, 12, -6, 12)
+
 
         self.InitUI()
 
@@ -32,31 +39,31 @@ class Example(Frame):
 
         # canvas.create_line(sw / 2, 0, sw / 2, sh)
         self.canvas.pack(fill=BOTH, expand=1)
-        canvasWidth = self.canvas.winfo_screenwidth()
-        canvasHeight = self.canvas.winfo_screenheight()
-        dx = canvasWidth / (x_right - x_left)
-        dy = canvasHeight / (y_top - y_bottom)
+        # canvasWidth = self.canvas.winfo_screenwidth()
+        # canvasHeight = self.canvas.winfo_screenheight()
+        self.dx = self.canvasWidth / (x_right - x_left)
+        self.dy = self.canvasHeight / (y_top - y_bottom)
 
-        cx = -x_left * dx
-        cy = y_top * dy
+        self.cx = -x_left * self.dx
+        self.cy = y_top * self.dy
 
-        self.canvas.create_line(0, cy, canvasWidth, cy, fill='black')
-        self.canvas.create_line(cx, 0, cx, canvasHeight, fill='black')
+        self.canvas.create_line(0, self.cy, self.canvasWidth, self.cy, fill='black')
+        self.canvas.create_line(self.cx, 0, self.cx, self.canvasHeight, fill='black')
 
         x_step = (x_right - x_left) / 18
         x = x_left
         while x <= x_right:
-            x_canvas = (x - x_left) * dx
-            self.canvas.create_line(x_canvas, cy - 3, x_canvas, cy + 3, fill='black')
-            self.canvas.create_text(x_canvas, cy + 15, text=str(round(x, 1)), font="Verdana 9", fill='black')
+            x_canvas = (x - x_left) * self.dx
+            self.canvas.create_line(x_canvas, self.cy - 3, x_canvas, self.cy + 3, fill='black')
+            self.canvas.create_text(x_canvas, self.cy + 15, text=str(round(x, 1)), font="Verdana 9", fill='black')
             x += x_step
 
         y_step = (y_top - y_bottom) / 18
         y = y_top
         while y >= y_bottom:
-            y_canvas = (y - y_top) * dy
-            self.canvas.create_line(cx - 3, -y_canvas, cx + 3, -y_canvas, fill='black')
-            self.canvas.create_text(cx + 25, -y_canvas, text=str(round(y, 1)), font="Verdana 9", fill='black')
+            y_canvas = (y - y_top) * self.dy
+            self.canvas.create_line(self.cx - 3, -y_canvas, self.cx + 3, -y_canvas, fill='black')
+            self.canvas.create_text(self.cx + 25, -y_canvas, text=str(round(y, 1)), font="Verdana 9", fill='black')
             y -= y_step
 
 
@@ -96,9 +103,17 @@ class Example(Frame):
         def getShapeCoords():
             global shapeCoords
             shapeCoords = list(map(int, entry1.get().split()))
-            for i in shapeCoords:
-                i*=dx
+            for i in range (0,len(shapeCoords),2):
+                shapeCoords[i] *= self.dx
+                shapeCoords[i]+=self.cx
+
+                # shapeCoords[i]
+            for i in range(1, len(shapeCoords), 2):
+                shapeCoords[i] *= -self.dy
+                shapeCoords[i]+=self.cy
+            # shapeCoords[i]
             print(shapeCoords)
+            self.canvas.create_polygon(shapeCoords, outline ='green', fill='green')
 
         def getLineCoords():
             global lineCoords
