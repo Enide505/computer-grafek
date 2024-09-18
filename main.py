@@ -3,7 +3,7 @@ from tkinter import *
 # from tkinter import ttk
 from tkinter.ttk import Style
 
-
+unitSize = 18
 
 class Example(Frame):
 
@@ -13,8 +13,50 @@ class Example(Frame):
         self.parent.title("Window")
         self.pack(fill=BOTH, expand=1) #для центровки окна
         self.centerWindow()
+        self.draw_axis(-6, 12, -6, 12)
 
         self.InitUI()
+
+    def draw_axis(self, x_left, x_right, y_bottom, y_top):
+        sw = self.parent.winfo_screenwidth()  # Ширина, высота экрана
+        sh = self.parent.winfo_screenheight()
+
+        # Блок оси и их масштаб
+        canvas = Canvas(self)
+        # canvas.create_line(0, sh / 2, sw, sh / 2)
+        # canvas.pack(fill=BOTH, expand=1)
+        canvasWidth = canvas.winfo_screenwidth()-50
+        canvasHeight = canvas.winfo_screenheight()-50
+
+        # canvas.create_line(sw / 2, 0, sw / 2, sh)
+        canvas.pack(fill=BOTH, expand=1)
+
+        dx = canvasWidth / (x_right - x_left)
+        dy = canvasHeight / (y_top - y_bottom)
+
+        cx = -x_left * dx
+        cy = y_top * dy
+
+        canvas.create_line(0, cy, canvasWidth, cy, fill='black')
+        canvas.create_line(cx, 0, cx, canvasHeight, fill='black')
+
+        x_step = (x_right - x_left) / 18
+        x = x_left
+        while x <= x_right:
+            x_canvas = (x - x_left) * dx
+            canvas.create_line(x_canvas, cy - 3, x_canvas, cy + 3, fill='black')
+            canvas.create_text(x_canvas, cy + 15, text=str(round(x, 1)), font="Verdana 9", fill='black')
+            x += x_step
+
+        y_step = (y_top - y_bottom) / 18
+        y = y_top
+        while y >= y_bottom:
+            y_canvas = (y - y_top) * dy
+            canvas.create_line(cx - 3, -y_canvas, cx + 3, -y_canvas, fill='black')
+            canvas.create_text(cx + 25, -y_canvas, text=str(round(y, 1)), font="Verdana 9", fill='black')
+            y -= y_step
+
+
 
     def centerWindow(self):
         w = 1280                         #ширина, высота окна
@@ -28,13 +70,11 @@ class Example(Frame):
         self.parent.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
 
-        #Блок оси и их масштаб
-        canvas = Canvas(self)
-        canvas.create_line(0, sh/2, sw, sh/2)
-        canvas.pack(fill=BOTH, expand=1)
 
-        canvas.create_line(sw/2, 0, sw/2, sh)
-        canvas.pack(fill=BOTH, expand=1)
+        # canvas.create_polygon(
+        #     points, outline='red',
+        #     fill='green', width=2
+        # )
 
 
 
@@ -51,17 +91,14 @@ class Example(Frame):
         shapeCoords=0
         def getShapeCoords():
             global shapeCoords
-            shapeCoords = entry1.get()
-            arrShape = list(map(int, shapeCoords.split()))
+            shapeCoords = list(map(int, entry1.get().split()))
             print(shapeCoords)
-            print(arrShape)
 
         def getLineCoords():
             global lineCoords
-            lineCoords = entry2.get()
-            arrLine = list(map(int, lineCoords.split()))
+            lineCoords = list(map(int, entry2.get().split()))
             print(lineCoords)
-            print(arrLine)
+
 
 
         self.master.title("Lab1")
