@@ -1,8 +1,10 @@
 # from array import array
-from math import atan2, degrees
+from math import atan2, degrees, cos, sin
 from tkinter import *
 # from tkinter import ttk
 from tkinter.ttk import Style
+
+import math
 
 unitSize = 18
 
@@ -41,7 +43,7 @@ class Example(Frame):
         self.canvas.pack(fill=BOTH, expand=1)
         # canvasWidth = self.canvas.winfo_screenwidth()
         # canvasHeight = self.canvas.winfo_screenheight()
-        self.dx = self.canvasWidth / (x_right - x_left)
+        self.dx = self.canvasHeight / (x_right - x_left)
         self.dy = self.canvasHeight / (y_top - y_bottom)
 
         self.cx = -x_left * self.dx
@@ -123,43 +125,68 @@ class Example(Frame):
         def GoToZ():
             global shapeCoords
             global deltaX, deltaY
+            # global cx, cy
             deltaX = lineCoords[0]
             deltaY = lineCoords[1]
             print("FFF", deltaX, deltaY)
 
             for i in range(0, len(lineCoords), 2):
-                lineCoords[i] -= deltaX
+                lineCoords[i] -= (deltaX-self.cx)
             for i in range(1, len(lineCoords), 2):
-                lineCoords[i] -= deltaY
+                lineCoords[i] -= (deltaY-self.cy)
 
             for i in range(0, len(shapeCoords), 2):
-                shapeCoords[i] -= deltaX
+                shapeCoords[i] -= (deltaX-self.cx)
             for i in range(1, len(shapeCoords), 2):
-                shapeCoords[i] -= deltaY
-            print(lineCoords)
+                shapeCoords[i] -= (deltaY-self.cy)
+            # print("linecoords in gotoz",lineCoords)
+            # print("shapecords in gotoz",shapeCoords)
+            # self.canvas.create_polygon(shapeCoords, outline='blue', fill='blue')
+            # self.canvas.create_polygon(lineCoords, outline='blue', fill='blue')
+
+
 
         def GoToInit():
             global deltaX, deltaY
             for i in range(0, len(lineCoords), 2):
-                lineCoords[i] += deltaX
+                lineCoords[i] += (deltaX-self.cx)
             for i in range(1, len(lineCoords), 2):
-                lineCoords[i] += deltaY
+                lineCoords[i] += (deltaY-self.cy)
 
             for i in range(0, len(shapeCoords), 2):
-                shapeCoords[i] += deltaX
+                shapeCoords[i] += (deltaX-self.cx)
             for i in range(1, len(shapeCoords), 2):
-                shapeCoords[i] += deltaY
-            print("ALOOO ", deltaX, deltaY)
+                shapeCoords[i] += (deltaY-self.cy)
+            # print("linecoords in gotoinit", lineCoords)
+            # print("shapecords in gotoinit", shapeCoords)
+            # self.canvas.create_polygon(shapeCoords, outline='yellow', fill='yellow')
+            # self.canvas.create_polygon(lineCoords, outline='yellow', fill='yellow')
 
         def RotateToX():
             angle = 0
-            angle = atan2(lineCoords[3] - lineCoords[1], lineCoords[2] - lineCoords[0])
+            angle = -atan2(lineCoords[3] - lineCoords[1], lineCoords[2] - lineCoords[0])
             print("angle", angle)
             print("deg", degrees(angle))
+            rotateMatrix=[
+                [cos(angle), -sin(angle)],
+                [sin(angle), cos(angle)]
+            ]
+
+            for i in range(0, len(lineCoords), 2):
+                # pointCords=[lineCoords[i], lineCoords[i+1]]
+
+                # numpy.matmul(rotateMatrix, pointCoords)
+                lineCoords[i]=lineCoords[i]*cos(angle)+lineCoords[i+1]*(-sin(angle))
+                lineCoords[i+1]=lineCoords[i]*sin(angle)+lineCoords[i+1]*(cos(angle))
+
+
+
 
         def Reflect():
             GoToZ()
             RotateToX()
+            print("rotatetox line:", lineCoords)
+            self.canvas.create_polygon(lineCoords, outline='red', fill='red')
             GoToInit()
 
         self.master.title("Lab1")
