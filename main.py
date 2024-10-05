@@ -203,22 +203,30 @@ class Example(Frame):
                 y_rot = sin_theta * x + cos_theta * y
 
                 # Добавляем повернутые координаты в список
-                rotated_shape.append(x_rot)
-                rotated_shape.append(y_rot)
+                shapeCoords[i]=x_rot
+                shapeCoords[i+1]=y_rot
 
-            print("rotated_shape in RotateToX", rotated_shape)
+            print("rotated_shape in RotateToX", shapeCoords)
 
-            PixelShapeCoords = CoordsToPixels(rotated_shape)
+            PixelShapeCoords = CoordsToPixels(shapeCoords)
             PixelLineCoords = CoordsToPixels(lineCoords)
             self.canvas.create_polygon(PixelShapeCoords, outline='yellow', fill='yellow')
             self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
+
+        def ReflectFromX():
+            for i in range(1, len(shapeCoords), 2):
+                shapeCoords[i]*=-1
 
 
         def Reflect():
             GoToZ()
             RotateToX()
             print("rotatetox line:", lineCoords)
-            self.canvas.create_polygon(lineCoords, outline='red', fill='red')
+            ReflectFromX()
+            PixelShapeCoords = CoordsToPixels(shapeCoords)
+            PixelLineCoords = CoordsToPixels(lineCoords)
+            self.canvas.create_polygon(PixelShapeCoords, outline='red', fill='red')
+            self.canvas.create_polygon(PixelLineCoords, outline='red', fill='red')
             GoToInit()
 
         self.master.title("Lab1")
