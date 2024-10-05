@@ -146,7 +146,6 @@ class Example(Frame):
             # self.canvas.create_polygon(PixelLineCoords, outline='blue', fill='blue')
 
 
-
         def GoToInit():
             global deltaX, deltaY
             for i in range(0, len(lineCoords), 2):
@@ -166,6 +165,7 @@ class Example(Frame):
             # self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
 
         def RotateToX():
+
             # Получаем координаты двух точек
             x1, y1, x2, y2 = lineCoords
             print("x1y1x2y2",x1, y1, x2, y2)
@@ -184,8 +184,34 @@ class Example(Frame):
             lineCoords[2] = cos_theta * x2 - sin_theta * y2
             lineCoords[3] = sin_theta * x2 + cos_theta * y2
             print(lineCoords)
+
+            #Поворачиваем фигуру
+            # for i in range(0, len(shapeCoords), 2):
+            #     shapeCoords[i] = cos_theta * shapeCoords[i] - sin_theta * shapeCoords[i+1]
+            #     shapeCoords[i+1] = sin_theta *shapeCoords[i]  + cos_theta * shapeCoords[i+1]
+
+            # Поворачиваем фигуру
+            rotated_shape = []
+
+            # Для каждой точки фигуры применяем поворот
+            for i in range(0, len(shapeCoords), 2):
+                x = shapeCoords[i]  # x-координата точки
+                y = shapeCoords[i + 1]  # y-координата точки
+
+                # Поворачиваем точку на угол -theta относительно начала координат
+                x_rot = cos_theta * x - sin_theta * y
+                y_rot = sin_theta * x + cos_theta * y
+
+                # Добавляем повернутые координаты в список
+                rotated_shape.append(x_rot)
+                rotated_shape.append(y_rot)
+
+            print("rotated_shape in RotateToX", rotated_shape)
+
+            PixelShapeCoords = CoordsToPixels(rotated_shape)
             PixelLineCoords = CoordsToPixels(lineCoords)
-            self.canvas.create_polygon(PixelLineCoords, outline='red', fill='red')
+            self.canvas.create_polygon(PixelShapeCoords, outline='yellow', fill='yellow')
+            self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
 
 
         def Reflect():
