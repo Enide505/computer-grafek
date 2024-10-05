@@ -129,36 +129,41 @@ class Example(Frame):
             print("FFF", deltaX, deltaY)
 
             for i in range(0, len(lineCoords), 2):
-                lineCoords[i] -= (deltaX-self.cx)
+                lineCoords[i] -= deltaX
             for i in range(1, len(lineCoords), 2):
-                lineCoords[i] -= (deltaY-self.cy)
+                lineCoords[i] -= deltaY
 
             for i in range(0, len(shapeCoords), 2):
-                shapeCoords[i] -= (deltaX-self.cx)
+                shapeCoords[i] -= deltaX
             for i in range(1, len(shapeCoords), 2):
-                shapeCoords[i] -= (deltaY-self.cy)
-            # print("linecoords in gotoz",lineCoords)
-            # print("shapecords in gotoz",shapeCoords)
-            # self.canvas.create_polygon(shapeCoords, outline='blue', fill='blue')
-            # self.canvas.create_polygon(lineCoords, outline='blue', fill='blue')
+                shapeCoords[i] -= deltaY
+            print("linecoords in gotoz",lineCoords)
+            print("shapecords in gotoz",shapeCoords)
+
+            PixelShapeCoords=CoordsToPixels(shapeCoords)
+            PixelLineCoords=CoordsToPixels(lineCoords)
+            self.canvas.create_polygon(PixelShapeCoords, outline='blue', fill='blue')
+            self.canvas.create_polygon(PixelLineCoords, outline='blue', fill='blue')
 
 
 
         def GoToInit():
             global deltaX, deltaY
             for i in range(0, len(lineCoords), 2):
-                lineCoords[i] += (deltaX-self.cx)
+                lineCoords[i] += deltaX
             for i in range(1, len(lineCoords), 2):
-                lineCoords[i] += (deltaY-self.cy)
+                lineCoords[i] += deltaY
 
             for i in range(0, len(shapeCoords), 2):
-                shapeCoords[i] += (deltaX-self.cx)
+                shapeCoords[i] += deltaX
             for i in range(1, len(shapeCoords), 2):
-                shapeCoords[i] += (deltaY-self.cy)
-            # print("linecoords in gotoinit", lineCoords)
-            # print("shapecords in gotoinit", shapeCoords)
-            # self.canvas.create_polygon(shapeCoords, outline='yellow', fill='yellow')
-            # self.canvas.create_polygon(lineCoords, outline='yellow', fill='yellow')
+                shapeCoords[i] += deltaY
+            print("linecoords in gotoinit", lineCoords)
+            print("shapecords in gotoinit", shapeCoords)
+            PixelShapeCoords = CoordsToPixels(shapeCoords)
+            PixelLineCoords = CoordsToPixels(lineCoords)
+            self.canvas.create_polygon(PixelShapeCoords, outline='yellow', fill='yellow')
+            self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
 
         def RotateToX():
             angle = 0
