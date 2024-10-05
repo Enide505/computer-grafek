@@ -140,10 +140,10 @@ class Example(Frame):
             print("linecoords in gotoz",lineCoords)
             print("shapecords in gotoz",shapeCoords)
 
-            PixelShapeCoords=CoordsToPixels(shapeCoords)
-            PixelLineCoords=CoordsToPixels(lineCoords)
-            self.canvas.create_polygon(PixelShapeCoords, outline='blue', fill='blue')
-            self.canvas.create_polygon(PixelLineCoords, outline='blue', fill='blue')
+            # PixelShapeCoords=CoordsToPixels(shapeCoords)
+            # PixelLineCoords=CoordsToPixels(lineCoords)
+            # self.canvas.create_polygon(PixelShapeCoords, outline='blue', fill='blue')
+            # self.canvas.create_polygon(PixelLineCoords, outline='blue', fill='blue')
 
 
 
@@ -160,29 +160,32 @@ class Example(Frame):
                 shapeCoords[i] += deltaY
             print("linecoords in gotoinit", lineCoords)
             print("shapecords in gotoinit", shapeCoords)
-            PixelShapeCoords = CoordsToPixels(shapeCoords)
-            PixelLineCoords = CoordsToPixels(lineCoords)
-            self.canvas.create_polygon(PixelShapeCoords, outline='yellow', fill='yellow')
-            self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
+            # PixelShapeCoords = CoordsToPixels(shapeCoords)
+            # PixelLineCoords = CoordsToPixels(lineCoords)
+            # self.canvas.create_polygon(PixelShapeCoords, outline='yellow', fill='yellow')
+            # self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
 
         def RotateToX():
-            angle = 0
-            angle = -atan2(lineCoords[3] - lineCoords[1], lineCoords[2] - lineCoords[0])
-            print("angle", angle)
-            print("deg", degrees(angle))
-            rotateMatrix=[
-                [cos(angle), -sin(angle)],
-                [sin(angle), cos(angle)]
-            ]
+            # Получаем координаты двух точек
+            x1, y1, x2, y2 = lineCoords
+            print("x1y1x2y2",x1, y1, x2, y2)
 
-            for i in range(0, len(lineCoords), 2):
-                # pointCords=[lineCoords[i], lineCoords[i+1]]
+            # Вычисляем угол между прямой и осью абсцисс
+            dx = x2 - x1
+            dy = y2 - y1
+            theta = math.atan2(dy, dx)  # atan2 используется для получения угла
+            print(degrees(theta))
 
-                # numpy.matmul(rotateMatrix, pointCoords)
-                lineCoords[i]=self.cx+lineCoords[i]*cos(angle)+lineCoords[i+1]*(-sin(angle))
-                lineCoords[i+1]=lineCoords[i]*sin(angle)+lineCoords[i+1]*(cos(angle))
+            # Вычисляем косинус и синус угла поворота (поворот на -theta)
+            cos_theta = math.cos(-theta)
+            sin_theta = math.sin(-theta)
 
-
+            # Поворачиваем вторую точку относительно начала координат
+            lineCoords[2] = cos_theta * x2 - sin_theta * y2
+            lineCoords[3] = sin_theta * x2 + cos_theta * y2
+            print(lineCoords)
+            PixelLineCoords = CoordsToPixels(lineCoords)
+            self.canvas.create_polygon(PixelLineCoords, outline='red', fill='red')
 
 
         def Reflect():
