@@ -3,6 +3,7 @@ from math import atan2, degrees, cos, sin
 from tkinter import *
 # from tkinter import ttk
 from tkinter.ttk import Style
+import copy
 
 import math
 
@@ -90,35 +91,32 @@ class Example(Frame):
     def InitUI(self):
 
         # shapeCoords=0
+
+        def CoordsToPixels(coords):
+            PixelCoords=copy.deepcopy(coords)
+            for i in range(0, len(PixelCoords), 2):
+                PixelCoords[i] *= self.dx
+                PixelCoords[i] += self.cx
+            for i in range(1, len(PixelCoords), 2):
+                PixelCoords[i] *= -self.dy
+                PixelCoords[i] += self.cy
+            return PixelCoords
+
         def getShapeCoords():
             global shapeCoords
             shapeCoords = list(map(int, entry1.get().split()))
-            for i in range(0, len(shapeCoords), 2):
-                shapeCoords[i] *= self.dx
-                shapeCoords[i] += self.cx
-
-                # shapeCoords[i]
-            for i in range(1, len(shapeCoords), 2):
-                shapeCoords[i] *= -self.dy
-                shapeCoords[i] += self.cy
-            # shapeCoords[i]
-            print(shapeCoords)
-            self.canvas.create_polygon(shapeCoords, outline='green', fill='green')
+            PixelShapeCoords=CoordsToPixels(shapeCoords)
+            print("shapeCoords in getShapeCoords:",shapeCoords);
+            print("PixelShapeCoords in getShapeCoords:",PixelShapeCoords);
+            self.canvas.create_polygon(PixelShapeCoords, outline='green', fill='green')
 
         def getLineCoords():
             global lineCoords
             lineCoords = list(map(int, entry2.get().split()))
-            for i in range(0, len(lineCoords), 2):
-                lineCoords[i] *= self.dx
-                lineCoords[i] += self.cx
-
-                # shapeCoords[i]
-            for i in range(1, len(lineCoords), 2):
-                lineCoords[i] *= -self.dy
-                lineCoords[i] += self.cy
-            print(lineCoords)
-            self.canvas.create_line(lineCoords)
-            # self.canvas.delete("all")
+            PixelLineCoords=CoordsToPixels(lineCoords)
+            print("lineCoords",lineCoords)
+            print("PixelLineCoords with CoordsToPixels",PixelLineCoords)
+            self.canvas.create_line(PixelLineCoords)
 
         deltaX, deltaY = 0, 0
 
@@ -176,7 +174,7 @@ class Example(Frame):
                 # pointCords=[lineCoords[i], lineCoords[i+1]]
 
                 # numpy.matmul(rotateMatrix, pointCoords)
-                lineCoords[i]=lineCoords[i]*cos(angle)+lineCoords[i+1]*(-sin(angle))
+                lineCoords[i]=self.cx+lineCoords[i]*cos(angle)+lineCoords[i+1]*(-sin(angle))
                 lineCoords[i+1]=lineCoords[i]*sin(angle)+lineCoords[i+1]*(cos(angle))
 
 
