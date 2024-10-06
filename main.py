@@ -165,7 +165,7 @@ class Example(Frame):
             # self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
 
         def RotateToX():
-
+            global theta
             # Получаем координаты двух точек
             x1, y1, x2, y2 = lineCoords
             print("x1y1x2y2",x1, y1, x2, y2)
@@ -185,13 +185,6 @@ class Example(Frame):
             lineCoords[3] = sin_theta * x2 + cos_theta * y2
             print(lineCoords)
 
-            #Поворачиваем фигуру
-            # for i in range(0, len(shapeCoords), 2):
-            #     shapeCoords[i] = cos_theta * shapeCoords[i] - sin_theta * shapeCoords[i+1]
-            #     shapeCoords[i+1] = sin_theta *shapeCoords[i]  + cos_theta * shapeCoords[i+1]
-
-            # Поворачиваем фигуру
-            rotated_shape = []
 
             # Для каждой точки фигуры применяем поворот
             for i in range(0, len(shapeCoords), 2):
@@ -208,10 +201,42 @@ class Example(Frame):
 
             print("rotated_shape in RotateToX", shapeCoords)
 
-            PixelShapeCoords = CoordsToPixels(shapeCoords)
-            PixelLineCoords = CoordsToPixels(lineCoords)
-            self.canvas.create_polygon(PixelShapeCoords, outline='yellow', fill='yellow')
-            self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
+            # PixelShapeCoords = CoordsToPixels(shapeCoords)
+            # PixelLineCoords = CoordsToPixels(lineCoords)
+            # self.canvas.create_polygon(PixelShapeCoords, outline='yellow', fill='yellow')
+            # self.canvas.create_polygon(PixelLineCoords, outline='yellow', fill='yellow')
+        def RotateBack():
+            print(degrees(theta), "in rotateback")
+            x1, y1, x2, y2 = lineCoords
+            # Вычисляем косинус и синус угла поворота (поворот на theta)
+            cos_theta = math.cos(theta)
+            sin_theta = math.sin(theta)
+
+            # Поворачиваем вторую точку относительно начала координат
+            lineCoords[2] = cos_theta * x2 - sin_theta * y2
+            lineCoords[3] = sin_theta * x2 + cos_theta * y2
+            print(lineCoords)
+
+            # Для каждой точки фигуры применяем поворот
+            for i in range(0, len(shapeCoords), 2):
+                x = shapeCoords[i]  # x-координата точки
+                y = shapeCoords[i + 1]  # y-координата точки
+
+                # Поворачиваем точку на угол -theta относительно начала координат
+                x_rot = cos_theta * x - sin_theta * y
+                y_rot = sin_theta * x + cos_theta * y
+
+                # Добавляем повернутые координаты в список
+                shapeCoords[i] = x_rot
+                shapeCoords[i + 1] = y_rot
+
+            # PixelShapeCoords = CoordsToPixels(shapeCoords)
+            # PixelLineCoords = CoordsToPixels(lineCoords)
+            # self.canvas.create_polygon(PixelShapeCoords, outline='purple', fill='purple')
+            # self.canvas.create_polygon(PixelLineCoords, outline='purple', fill='purple')
+
+            print("rotated_shape in RotateToX", shapeCoords)
+
 
         def ReflectFromX():
             for i in range(1, len(shapeCoords), 2):
@@ -221,13 +246,14 @@ class Example(Frame):
         def Reflect():
             GoToZ()
             RotateToX()
-            print("rotatetox line:", lineCoords)
             ReflectFromX()
+            RotateBack()
+            GoToInit()
+
             PixelShapeCoords = CoordsToPixels(shapeCoords)
             PixelLineCoords = CoordsToPixels(lineCoords)
             self.canvas.create_polygon(PixelShapeCoords, outline='red', fill='red')
             self.canvas.create_polygon(PixelLineCoords, outline='red', fill='red')
-            GoToInit()
 
         self.master.title("Lab1")
         self.style = Style()
